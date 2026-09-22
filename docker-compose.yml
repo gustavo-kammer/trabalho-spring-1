@@ -1,0 +1,23 @@
+# Banco de dados para desenvolvimento local.
+# Defina as variáveis em um arquivo .env na raiz (veja .env.example).
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ricetta-mia-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:?defina DB_NAME no .env}
+      POSTGRES_USER: ${DB_USERNAME:?defina DB_USERNAME no .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
