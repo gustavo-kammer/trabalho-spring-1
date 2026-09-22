@@ -1,54 +1,33 @@
-### Java / Maven ###
+HELP.md
 target/
-*.class
-*.jar
-*.war
-*.ear
 .mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-### Spring Boot ###
-application-dev.yml
-application-local.yml
-*.pid
-
-### Variáveis de ambiente e segredos ###
-.env
-.env.local
-*.env
-**/secrets/**
-
-### IDEs ###
-.idea/
-*.iml
-*.iws
-.vscode/
-.settings/
+### STS ###
+.apt_generated
 .classpath
-.project
 .factorypath
-*.launch
+.project
+.settings
+.springBeans
+.sts4-cache
 
-### Sistema Operacional ###
-.DS_Store
-Thumbs.db
-desktop.ini
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-### Logs ###
-*.log
-logs/
-
-### Docker ###
-docker-compose.override.yml
-
-### Banco de dados local ###
-*.db
-*.sqlite
-
-### Testes / Cobertura ###
-/coverage
-*.exec
-
-### Build / Dist ###
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 build/
-out/
-dist/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
