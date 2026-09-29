@@ -1,1 +1,0 @@
-ALTER TABLE cliente ADD COLUMN cpf
