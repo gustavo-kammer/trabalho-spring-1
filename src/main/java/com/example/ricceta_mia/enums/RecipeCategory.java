@@ -1,0 +1,33 @@
+package com.example.ricceta_mia.enums;
+
+public enum RecipeCategory {
+    BRAZILIAN,
+    ITALIAN,
+    JAPANESE,
+    CHINESE,
+    MEXICAN,
+    FRENCH,
+    INDIAN,
+    THAI,
+    ARABIC,
+    PORTUGUESE,
+    GERMAN,
+    SPANISH,
+    KOREAN,
+    PERUVIAN,
+    AMERICAN,
+    ARGENTINE,
+    GREEK,
+    TURKISH,
+    VIETNAMESE,
+    MOROCCAN,
+    CARIBBEAN,
+    AFRICAN,
+    MEDITERRANEAN,
+    FUSION,
+    VEGETARIAN,
+    VEGAN,
+    GLUTEN_FREE,
+    LACTOSE_FREE,
+    LOW_CARB
+}
