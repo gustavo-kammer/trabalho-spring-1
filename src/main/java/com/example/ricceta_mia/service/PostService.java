@@ -5,11 +5,12 @@ import com.example.ricceta_mia.dto.response.PostResponse;
 import com.example.ricceta_mia.entity.Post;
 import com.example.ricceta_mia.enums.PostStatus;
 import com.example.ricceta_mia.enums.RecipeCategory;
+import com.example.ricceta_mia.exception.BusinessException;
+import com.example.ricceta_mia.exception.ForbiddenException;
+import com.example.ricceta_mia.exception.ResourceNotFoundException;
 import com.example.ricceta_mia.repository.PostRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +65,7 @@ public class PostService {
     @Transactional
     public PostResponse updateStatus(Long id, Long currentUserId, PostStatus status) {
         if (status == PostStatus.DELETED) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Use DELETE /posts/{id} para remover o post");
+            throw new BusinessException("Use DELETE /posts/{id} para remover o post");
         }
         Post post = getOwnPost(id, currentUserId);
         post.setStatus(status);
@@ -82,9 +83,9 @@ public class PostService {
     // posts arquivados só ficam visíveis para o próprio autor
     public Post getVisiblePost(Long id, Long currentUserId) {
         Post post = postRepository.findByIdAndStatusNot(id, PostStatus.DELETED)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post não encontrado"));
         if (post.getStatus() == PostStatus.ARCHIVED && !post.getUser().getId().equals(currentUserId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado");
+            throw new ResourceNotFoundException("Post não encontrado");
         }
         return post;
     }
@@ -92,7 +93,7 @@ public class PostService {
     private Post getOwnPost(Long id, Long currentUserId) {
         Post post = getVisiblePost(id, currentUserId);
         if (!post.getUser().getId().equals(currentUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você não pode alterar este post");
+            throw new ForbiddenException("Você não pode alterar este post");
         }
         return post;
     }

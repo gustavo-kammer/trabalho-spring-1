@@ -5,11 +5,11 @@ import com.example.ricceta_mia.dto.response.UserResponse;
 import com.example.ricceta_mia.entity.User;
 import com.example.ricceta_mia.enums.RecipeCategory;
 import com.example.ricceta_mia.enums.UserStatus;
+import com.example.ricceta_mia.exception.ConflictException;
+import com.example.ricceta_mia.exception.ResourceNotFoundException;
 import com.example.ricceta_mia.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,7 +40,7 @@ public class UserService {
         User user = getActiveUser(id);
 
         if (request.nickname() != null && userRepository.existsByNicknameAndIdNot(request.nickname(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname já está em uso");
+            throw new ConflictException("Nickname já está em uso");
         }
 
         user.setFirstName(request.firstName());
@@ -64,6 +64,6 @@ public class UserService {
 
     public User getActiveUser(Long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 }

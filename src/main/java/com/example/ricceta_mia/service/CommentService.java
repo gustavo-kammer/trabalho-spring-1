@@ -3,11 +3,11 @@ package com.example.ricceta_mia.service;
 import com.example.ricceta_mia.dto.request.CommentRequest;
 import com.example.ricceta_mia.dto.response.CommentResponse;
 import com.example.ricceta_mia.entity.Comment;
+import com.example.ricceta_mia.exception.ForbiddenException;
+import com.example.ricceta_mia.exception.ResourceNotFoundException;
 import com.example.ricceta_mia.repository.CommentRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,13 +52,13 @@ public class CommentService {
     @Transactional
     public void delete(Long id, Long currentUserId) {
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Comentário não encontrado"));
 
         // o autor do comentário ou o autor do post podem remover
         boolean isCommentAuthor = comment.getUser().getId().equals(currentUserId);
         boolean isPostAuthor = comment.getPost().getUser().getId().equals(currentUserId);
         if (!isCommentAuthor && !isPostAuthor) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você não pode remover este comentário");
+            throw new ForbiddenException("Você não pode remover este comentário");
         }
 
         comment.setDeletedAt(LocalDateTime.now());
@@ -67,9 +67,9 @@ public class CommentService {
 
     private Comment getOwnComment(Long id, Long currentUserId) {
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Comentário não encontrado"));
         if (!comment.getUser().getId().equals(currentUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você não pode alterar este comentário");
+            throw new ForbiddenException("Você não pode alterar este comentário");
         }
         return comment;
     }
