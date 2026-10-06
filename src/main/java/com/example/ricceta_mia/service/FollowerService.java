@@ -4,11 +4,10 @@ import com.example.ricceta_mia.dto.response.UserSummaryResponse;
 import com.example.ricceta_mia.entity.Follower;
 import com.example.ricceta_mia.entity.User;
 import com.example.ricceta_mia.enums.UserStatus;
+import com.example.ricceta_mia.exception.BusinessException;
 import com.example.ricceta_mia.repository.FollowerRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +26,7 @@ public class FollowerService {
     @Transactional
     public void follow(Long currentUserId, Long userToFollowId) {
         if (currentUserId.equals(userToFollowId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Você não pode seguir a si mesmo");
+            throw new BusinessException("Você não pode seguir a si mesmo");
         }
         User userToFollow = userService.getActiveUser(userToFollowId);
 
