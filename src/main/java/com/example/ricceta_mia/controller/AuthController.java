@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.AuthControllerDoc;
+
 import com.example.ricceta_mia.dto.request.LoginRequest;
 import com.example.ricceta_mia.dto.request.RegisterUserRequest;
 import com.example.ricceta_mia.dto.response.LoginResponse;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDoc {
 
     private final AuthService authService;
 

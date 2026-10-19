@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.LikeControllerDoc;
+
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.dto.response.LikesResponse;
 import com.example.ricceta_mia.service.LikeService;
@@ -9,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts/{postId}/likes")
-public class LikeController {
+public class LikeController implements LikeControllerDoc {
 
     private final LikeService likeService;
 

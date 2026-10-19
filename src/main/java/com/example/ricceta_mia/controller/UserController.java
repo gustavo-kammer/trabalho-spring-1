@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.UserControllerDoc;
+
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.dto.request.UpdateUserRequest;
 import com.example.ricceta_mia.dto.response.PostResponse;
@@ -15,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerDoc {
 
     private final UserService userService;
     private final FavoriteService favoriteService;
