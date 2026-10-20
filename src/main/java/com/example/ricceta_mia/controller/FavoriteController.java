@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.FavoriteControllerDoc;
+
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.service.FavoriteService;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts/{postId}/favorites")
-public class FavoriteController {
+public class FavoriteController implements FavoriteControllerDoc {
 
     private final FavoriteService favoriteService;
 

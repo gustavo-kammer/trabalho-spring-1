@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.FollowerControllerDoc;
+
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.dto.response.UserSummaryResponse;
 import com.example.ricceta_mia.service.FollowerService;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users/{userId}")
-public class FollowerController {
+public class FollowerController implements FollowerControllerDoc {
 
     private final FollowerService followerService;
 

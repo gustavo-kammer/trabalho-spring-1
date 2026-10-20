@@ -1,5 +1,7 @@
 package com.example.ricceta_mia.controller;
 
+import com.example.ricceta_mia.doc.CommentControllerDoc;
+
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.dto.request.CommentRequest;
 import com.example.ricceta_mia.dto.response.CommentResponse;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class CommentController {
+public class CommentController implements CommentControllerDoc {
 
     private final CommentService commentService;
 
