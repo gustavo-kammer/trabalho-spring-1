@@ -34,8 +34,9 @@ public class PostController implements PostControllerDoc {
 
     @GetMapping
     public ResponseEntity<List<PostResponse>> findAll(@RequestParam(required = false) Long userId,
-                                                      @RequestParam(required = false) RecipeCategory category) {
-        return ResponseEntity.ok(postService.findAll(userId, category));
+                                                      @RequestParam(required = false) RecipeCategory category,
+                                                      @AuthenticationPrincipal JWTUserData currentUser) {
+        return ResponseEntity.ok(postService.findAll(userId, category, currentUser.userId()));
     }
 
     @GetMapping("/{id}")

@@ -5,6 +5,7 @@ import com.example.ricceta_mia.doc.UserControllerDoc;
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.dto.request.UpdateUserRequest;
 import com.example.ricceta_mia.dto.response.PostResponse;
+import com.example.ricceta_mia.dto.response.PublicUserResponse;
 import com.example.ricceta_mia.dto.response.UserResponse;
 import com.example.ricceta_mia.service.FavoriteService;
 import com.example.ricceta_mia.service.UserService;
@@ -28,17 +29,17 @@ public class UserController implements UserControllerDoc {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAll() {
+    public ResponseEntity<List<PublicUserResponse>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal JWTUserData currentUser) {
-        return ResponseEntity.ok(userService.findById(currentUser.userId()));
+        return ResponseEntity.ok(userService.findMe(currentUser.userId()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<PublicUserResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 

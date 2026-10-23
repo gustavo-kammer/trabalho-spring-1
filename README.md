@@ -34,7 +34,7 @@ São 27 operações organizadas em sete grupos. A implementação utiliza spring
 4. Clique em **Authorize**, cole somente o token (sem escrever `Bearer`) e confirme.
 5. Execute `GET /users/me` para consultar o perfil autenticado.
 
-Login e cadastro são públicos. As demais operações exigem token. A segurança atual retorna **403** quando o token está ausente ou inválido; credenciais incorretas no login retornam **401**. As operações executadas pelo Swagger usam o banco conectado à aplicação, portanto cadastros e alterações são reais.
+Login e cadastro são públicos. As demais operações exigem token. Token ausente, inválido ou expirado retorna **401**, assim como credenciais incorretas no login. O **403** fica reservado para operações permitidas somente ao autor, como editar a receita de outra pessoa. Todos os erros usam `application/problem+json`. As operações executadas pelo Swagger usam o banco conectado à aplicação, portanto cadastros e alterações são reais.
 
 ### Organização no código
 
@@ -52,4 +52,4 @@ Login e cadastro são públicos. As demais operações exigem token. A seguranç
 
 Os testes precisam de um PostgreSQL. Para usar um banco exclusivo de testes, defina `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` na sessão do terminal antes de executar o comando. O Flyway criará as tabelas nesse banco.
 
-`SwaggerIntegrationTests` inicia a aplicação em uma porta disponível e verifica a interface, os recursos do Swagger, as 27 operações, os modelos de dados, as operações públicas e a autenticação JWT. O teste de autenticação cadastra um usuário com e-mail aleatório e remove esse registro ao terminar. Prefira sempre um banco de testes.
+`SwaggerIntegrationTests` inicia a aplicação em uma porta disponível e verifica a interface, os recursos do Swagger, as 27 operações, os modelos de dados, as operações públicas e a autenticação JWT. O teste de autenticação cadastra um usuário com e-mail aleatório, publica uma receita, curte e favorita essa receita, e remove o usuário (e, em cascata, a receita) ao terminar. Prefira sempre um banco de testes.

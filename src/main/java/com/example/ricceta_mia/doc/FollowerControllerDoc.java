@@ -20,11 +20,8 @@ import java.util.List;
 @Tag(name = "Seguidores", description = "Relacionamentos entre usuários ativos.")
 @SecurityRequirement(name = OpenAPIConfig.SECURITY_SCHEME_NAME)
 @ApiResponses({
-        @ApiResponse(responseCode = "403", description = "Acesso negado. Token ausente ou inválido retorna application/json; restrições de autoria retornam application/problem+json.",
-                content = {
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = SecurityErrorResponse.class)),
-                        @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
-                }),
+        @ApiResponse(responseCode = "401", description = "Token ausente, inválido ou expirado",
+                content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "500", description = "Erro interno inesperado",
                     content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
 })

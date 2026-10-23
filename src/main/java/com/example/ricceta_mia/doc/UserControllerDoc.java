@@ -3,6 +3,7 @@ package com.example.ricceta_mia.doc;
 import com.example.ricceta_mia.config.JWTUserData;
 import com.example.ricceta_mia.config.OpenAPIConfig;
 import com.example.ricceta_mia.dto.response.PostResponse;
+import com.example.ricceta_mia.dto.response.PublicUserResponse;
 import com.example.ricceta_mia.dto.request.UpdateUserRequest;
 import com.example.ricceta_mia.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,23 +24,20 @@ import java.util.List;
 @Tag(name = "Usuários", description = "Consulta e manutenção de perfis e favoritos.")
 @SecurityRequirement(name = OpenAPIConfig.SECURITY_SCHEME_NAME)
 @ApiResponses({
-        @ApiResponse(responseCode = "403", description = "Acesso negado. Token ausente ou inválido retorna application/json; restrições de autoria retornam application/problem+json.",
-                content = {
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = SecurityErrorResponse.class)),
-                        @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
-                }),
+        @ApiResponse(responseCode = "401", description = "Token ausente, inválido ou expirado",
+                content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "500", description = "Erro interno inesperado",
                     content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
 })
 public interface UserControllerDoc {
 
     @Operation(summary = "Lista usuários",
-            description = "Retorna os usuários ativos em ordem de nome.")
+            description = "Retorna os usuários ativos em ordem de nome, sem o e-mail.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso",
-                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserResponse.class))))
+                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PublicUserResponse.class))))
     })
-    ResponseEntity<List<UserResponse>> findAll();
+    ResponseEntity<List<PublicUserResponse>> findAll();
 
     @Operation(summary = "Consulta meu perfil",
             description = "Retorna o perfil do usuário identificado pelo token.")
@@ -52,14 +50,14 @@ public interface UserControllerDoc {
     ResponseEntity<UserResponse> me(@Parameter(hidden = true) JWTUserData currentUser);
 
     @Operation(summary = "Consulta um usuário",
-            description = "Retorna o perfil de um usuário ativo.")
+            description = "Retorna o perfil público de um usuário ativo, sem o e-mail.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PublicUserResponse.class))),
             @ApiResponse(responseCode = "404", description = "Usuário, receita ou comentário não encontrado ou não visível",
                     content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
     })
-    ResponseEntity<UserResponse> findById(@Parameter(description = "Identificador do usuário", example = "1") Long id);
+    ResponseEntity<PublicUserResponse> findById(@Parameter(description = "Identificador do usuário", example = "1") Long id);
 
     @Operation(summary = "Atualiza meu perfil",
             description = "Atualiza o perfil autenticado. Nickname deve ser único. Se preferredCategories for omitido, mantém as preferências atuais.")

@@ -70,7 +70,7 @@ class SwaggerIntegrationTests {
                     assertTrue(spec.path("security").isMissingNode() || spec.path("security").isEmpty());
                 } else {
                     assertTrue(operation.path("security").get(0).has("bearerAuth"), key);
-                    assertTrue(operation.path("responses").has("403"), key);
+                    assertTrue(operation.path("responses").has("401"), key);
                 }
                 for (JsonNode parameter : operation.path("parameters")) {
                     assertFalse(Set.of("currentUser", "email").contains(parameter.path("name").asText()), key);
@@ -94,21 +94,25 @@ class SwaggerIntegrationTests {
         JsonNode schemas = spec.path("components").path("schemas");
         assertFalse(schemas.has("JWTUserData"));
         assertFalse(schemas.path("UserResponse").path("properties").has("password"));
+        assertFalse(schemas.path("PublicUserResponse").path("properties").has("email"));
+        assertTrue(schemas.path("PostResponse").path("properties").has("totalLikes"));
+        assertTrue(schemas.path("PostResponse").path("properties").has("likedByMe"));
+        assertTrue(schemas.path("PostResponse").path("properties").has("favoritedByMe"));
         assertEquals("maria@example.com", schemas.at("/LoginRequest/properties/email/example").asText());
         assertEquals(8, schemas.at("/RegisterUserRequest/properties/password/minLength").asInt());
         assertEquals("array", spec.at("/paths/~1posts/get/responses/200/content/application~1json/schema/type").asText());
         assertEquals("#/components/schemas/PostRequest", spec.at("/paths/~1posts/post/requestBody/content/application~1json/schema/$ref").asText());
         assertEquals("#/components/schemas/ProblemDetail", spec.at("/paths/~1auth~1register/post/responses/409/content/application~1problem+json/schema/$ref").asText());
-        assertEquals("#/components/schemas/SecurityErrorResponse", spec.at("/paths/~1users~1me/get/responses/403/content/application~1json/schema/$ref").asText());
+        assertEquals("#/components/schemas/ProblemDetail", spec.at("/paths/~1users~1me/get/responses/401/content/application~1problem+json/schema/$ref").asText());
     }
 
     @Test
     void documentedPublicLoginAndBearerAuthenticationWork() throws Exception {
         var denied = request("GET", "/users/me", null, null);
-        assertEquals(403, denied.statusCode());
-        assertTrue(denied.headers().firstValue("content-type").orElse("").contains("application/json"));
-        assertEquals("Forbidden", json.readTree(denied.body()).path("error").asText());
-        assertEquals(403, request("GET", "/users/me", null, "invalid-token").statusCode());
+        assertEquals(401, denied.statusCode());
+        assertTrue(denied.headers().firstValue("content-type").orElse("").contains("application/problem+json"));
+        assertEquals("Não autorizado", json.readTree(denied.body()).path("title").asText());
+        assertEquals(401, request("GET", "/users/me", null, "invalid-token").statusCode());
         assertEquals(400, request("POST", "/auth/register", "{}", null).statusCode());
         String email = "swagger-" + UUID.randomUUID() + "@example.com";
         String password = UUID.randomUUID().toString();
@@ -127,6 +131,27 @@ class SwaggerIntegrationTests {
             var profile = request("GET", "/users/me", null, token);
             assertEquals(200, profile.statusCode());
             assertEquals(email, json.readTree(profile.body()).path("email").asText());
+            var publicProfile = request("GET", "/users/" + createdId, null, token);
+            assertEquals(200, publicProfile.statusCode());
+            assertFalse(json.readTree(publicProfile.body()).has("email"));
+
+            var created = request("POST", "/posts", json.writeValueAsString(Map.of(
+                    "title", "Receita de teste", "ingredients", "farinha", "instructions", "misture")), token);
+            assertEquals(201, created.statusCode());
+            JsonNode newPost = json.readTree(created.body());
+            assertEquals(0, newPost.path("totalLikes").asLong());
+            assertFalse(newPost.path("likedByMe").asBoolean());
+            assertFalse(newPost.path("favoritedByMe").asBoolean());
+            long postId = newPost.path("id").asLong();
+            assertEquals(200, request("POST", "/posts/" + postId + "/likes", null, token).statusCode());
+            assertEquals(204, request("POST", "/posts/" + postId + "/favorites", null, token).statusCode());
+            JsonNode post = json.readTree(request("GET", "/posts/" + postId, null, token).body());
+            assertEquals(1, post.path("totalLikes").asLong());
+            assertTrue(post.path("likedByMe").asBoolean());
+            assertTrue(post.path("favoritedByMe").asBoolean());
+            JsonNode listed = json.readTree(request("GET", "/posts?userId=" + createdId, null, token).body()).get(0);
+            assertEquals(1, listed.path("totalLikes").asLong());
+            assertTrue(listed.path("favoritedByMe").asBoolean());
         } finally {
             if (createdId != null) {
                 userRepository.deleteById(createdId);

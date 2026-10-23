@@ -1,6 +1,7 @@
 package com.example.ricceta_mia.service;
 
 import com.example.ricceta_mia.dto.request.UpdateUserRequest;
+import com.example.ricceta_mia.dto.response.PublicUserResponse;
 import com.example.ricceta_mia.dto.response.UserResponse;
 import com.example.ricceta_mia.entity.User;
 import com.example.ricceta_mia.enums.RecipeCategory;
@@ -24,14 +25,20 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> findAll() {
+    public List<PublicUserResponse> findAll() {
         return userRepository.findAllByStatusOrderByFirstNameAsc(UserStatus.ACTIVE).stream()
-                .map(UserResponse::from)
+                .map(PublicUserResponse::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public UserResponse findById(Long id) {
+    public PublicUserResponse findById(Long id) {
+        return PublicUserResponse.from(getActiveUser(id));
+    }
+
+    // único ponto que devolve o e-mail: o próprio perfil
+    @Transactional(readOnly = true)
+    public UserResponse findMe(Long id) {
         return UserResponse.from(getActiveUser(id));
     }
 

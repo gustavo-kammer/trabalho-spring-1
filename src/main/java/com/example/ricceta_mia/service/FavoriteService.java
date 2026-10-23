@@ -51,10 +51,10 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<PostResponse> findAllByUser(Long userId) {
-        return favoriteRepository.findAllByUserIdAndDeletedAtIsNullOrderByCreatedAtDesc(userId).stream()
+        List<Post> posts = favoriteRepository.findAllByUserIdAndDeletedAtIsNullOrderByCreatedAtDesc(userId).stream()
                 .map(Favorite::getPost)
                 .filter(post -> post.getStatus() == PostStatus.ACTIVE)
-                .map(PostResponse::from)
                 .toList();
+        return postService.toResponses(posts, userId);
     }
 }

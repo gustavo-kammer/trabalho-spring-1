@@ -24,11 +24,10 @@ import java.util.List;
 @Tag(name = "Receitas", description = "Publicação, consulta, edição e arquivamento de receitas.")
 @SecurityRequirement(name = OpenAPIConfig.SECURITY_SCHEME_NAME)
 @ApiResponses({
-        @ApiResponse(responseCode = "403", description = "Acesso negado. Token ausente ou inválido retorna application/json; restrições de autoria retornam application/problem+json.",
-                content = {
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = SecurityErrorResponse.class)),
-                        @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
-                }),
+        @ApiResponse(responseCode = "401", description = "Token ausente, inválido ou expirado",
+                content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))),
+        @ApiResponse(responseCode = "403", description = "Operação permitida somente ao autor do registro",
+                content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "500", description = "Erro interno inesperado",
                     content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
 })
@@ -56,7 +55,8 @@ public interface PostControllerDoc {
                     content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class)))
     })
     ResponseEntity<List<PostResponse>> findAll(@Parameter(description = "Filtro opcional pelo autor", example = "1") Long userId,
-            @Parameter(description = "Filtro opcional pela categoria") RecipeCategory category);
+            @Parameter(description = "Filtro opcional pela categoria") RecipeCategory category,
+            @Parameter(hidden = true) JWTUserData currentUser);
 
     @Operation(summary = "Consulta uma receita",
             description = "Receitas arquivadas são visíveis somente ao próprio autor. Receitas excluídas ou não visíveis retornam 404.")
