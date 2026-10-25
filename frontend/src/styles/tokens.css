@@ -11,6 +11,8 @@
   --color-info-bg: #ebf3ed;
   --color-on-primary: #ffffff;
   --color-primary-soft: #e1f0e5; /* fundo de etiquetas, avatar e itens ativos */
+  --color-danger-dark: #8f1e18;
+  --color-overlay: rgb(29 43 34 / 0.45); /* fundo escuro atrás das janelas de confirmação */
   --radius: 12px;
   --radius-sm: 8px;
   --max-width: 1100px;

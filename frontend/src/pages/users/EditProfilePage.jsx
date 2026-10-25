@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { usersApi } from '../../api/users'
 import { useAuth } from '../../auth/AuthContext'
 import CategoryPicker from '../../components/CategoryPicker'
+import { useConfirm } from '../../components/ConfirmDialog'
 import Field from '../../components/Field'
 import Loading from '../../components/Loading'
 import { formErrorsFrom } from '../../utils/errors'
@@ -41,6 +42,7 @@ export default function EditProfilePage() {
 function EditProfileForm({ user }) {
   const { setUser, logout } = useAuth()
   const navigate = useNavigate()
+  const confirm = useConfirm()
   const [form, setForm] = useState(() => toForm(user))
   const [errors, setErrors] = useState({})
   const [generalError, setGeneralError] = useState('')
@@ -83,7 +85,13 @@ function EditProfileForm({ user }) {
   }
 
   async function handleDeleteAccount() {
-    if (!window.confirm('Excluir sua conta? Você não poderá mais entrar com ela. Essa ação não pode ser desfeita.')) return
+    const confirmed = await confirm({
+      title: 'Excluir sua conta?',
+      message: 'Você não poderá mais entrar com este e-mail. Essa ação não pode ser desfeita.',
+      confirmLabel: 'Excluir conta',
+      danger: true,
+    })
+    if (!confirmed) return
 
     setIsDeleting(true)
     setDeleteError('')

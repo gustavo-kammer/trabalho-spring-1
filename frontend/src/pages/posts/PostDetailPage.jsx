@@ -6,6 +6,7 @@ import { postsApi } from '../../api/posts'
 import { useAuth } from '../../auth/AuthContext'
 import Avatar from '../../components/Avatar'
 import CategoryTags from '../../components/CategoryTags'
+import { useConfirm } from '../../components/ConfirmDialog'
 import EmptyState from '../../components/EmptyState'
 import ErrorMessage from '../../components/ErrorMessage'
 import Loading from '../../components/Loading'
@@ -19,6 +20,7 @@ export default function PostDetailPage() {
   const { id } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const confirm = useConfirm()
   const { data: post, loading, error, reload, setData } = useFetch(() => postsApi.get(id), [id])
   const [busyAction, setBusyAction] = useState(null)
   const [actionError, setActionError] = useState('')
@@ -51,16 +53,29 @@ export default function PostDetailPage() {
     })
   }
 
-  function handleToggleStatus() {
+  async function handleToggleStatus() {
     const archiving = post.status === 'ACTIVE'
-    if (archiving && !window.confirm('Arquivar esta receita? Ela deixa de aparecer no feed, nos perfis e nos favoritos.')) return
+    if (archiving) {
+      const confirmed = await confirm({
+        title: 'Arquivar receita?',
+        message: 'Ela deixa de aparecer no feed, nos perfis e nos favoritos. Você pode reativá-la depois.',
+        confirmLabel: 'Arquivar',
+      })
+      if (!confirmed) return
+    }
     runAction('status', async () => {
       setData(await postsApi.setStatus(post.id, archiving ? 'ARCHIVED' : 'ACTIVE'))
     })
   }
 
-  function handleDelete() {
-    if (!window.confirm('Excluir esta receita? Essa ação não pode ser desfeita.')) return
+  async function handleDelete() {
+    const confirmed = await confirm({
+      title: 'Excluir receita?',
+      message: `"${post.title}" será excluída. Essa ação não pode ser desfeita.`,
+      confirmLabel: 'Excluir',
+      danger: true,
+    })
+    if (!confirmed) return
     runAction('delete', async () => {
       await postsApi.remove(post.id)
       navigate('/', { replace: true })

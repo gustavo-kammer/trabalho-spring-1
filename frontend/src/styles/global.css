@@ -50,6 +50,9 @@ a.btn { text-decoration: none; }
 .btn--ghost { background: transparent; border-color: transparent; }
 .btn--danger { color: var(--color-danger); border-color: var(--color-danger); }
 .btn--danger:not(.btn--primary):hover:not(:disabled) { background: var(--color-danger-bg); }
+/* botão vermelho cheio: confirmar uma exclusão */
+.btn--danger-fill { background: var(--color-danger); border-color: var(--color-danger); color: var(--color-on-primary); }
+.btn--danger-fill:hover:not(:disabled) { background: var(--color-danger-dark); }
 .btn--sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
 /* botão ligado (curtido, favoritado, seguindo) */
 .btn--active { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary-dark); }

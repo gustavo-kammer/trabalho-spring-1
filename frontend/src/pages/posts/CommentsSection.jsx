@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { commentsApi } from '../../api/comments'
 import { useAuth } from '../../auth/AuthContext'
 import Avatar from '../../components/Avatar'
+import { useConfirm } from '../../components/ConfirmDialog'
 import ErrorMessage from '../../components/ErrorMessage'
 import Field from '../../components/Field'
 import Loading from '../../components/Loading'
@@ -18,6 +19,7 @@ function wasEdited(comment) {
 // Fica no fim do detalhe da receita. O dono da receita pode apagar qualquer comentário.
 export default function CommentsSection({ postId, isPostOwner }) {
   const { user } = useAuth()
+  const confirm = useConfirm()
   const { data: comments, loading, error, reload, setData } = useFetch(
     () => commentsApi.list(postId),
     [postId],
@@ -80,7 +82,13 @@ export default function CommentsSection({ postId, isPostOwner }) {
   }
 
   async function handleDelete(comment) {
-    if (!window.confirm('Excluir este comentário?')) return
+    const confirmed = await confirm({
+      title: 'Excluir comentário?',
+      message: 'O comentário será removido para todos. Essa ação não pode ser desfeita.',
+      confirmLabel: 'Excluir',
+      danger: true,
+    })
+    if (!confirmed) return
 
     setBusyId(comment.id)
     try {
