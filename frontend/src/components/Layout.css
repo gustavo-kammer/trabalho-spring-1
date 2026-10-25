@@ -1,0 +1,53 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 64px;
+}
+
+.navbar__logo {
+  color: var(--color-primary);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar__links { display: flex; flex: 1; gap: var(--space-1); }
+
+.navbar__link {
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.navbar__link:hover { background: var(--color-info-bg); color: var(--color-text); }
+.navbar__link.active { background: var(--color-primary-soft); color: var(--color-primary-dark); }
+
+.navbar__actions { display: flex; align-items: center; gap: var(--space-2); }
+.navbar__user { color: var(--color-text-muted); font-size: 0.9rem; white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .navbar__inner { flex-wrap: wrap; row-gap: 0; padding-top: var(--space-2); }
+  .navbar__actions { margin-left: auto; }
+  .navbar__user { display: none; }
+  /* links viram uma segunda linha com rolagem lateral */
+  .navbar__links {
+    order: 3;
+    flex-basis: 100%;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+  }
+}

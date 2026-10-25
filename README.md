@@ -44,6 +44,18 @@ Login e cadastro são públicos. As demais operações exigem token. Token ausen
 - `dto/request`: exemplos e descrições dos dados enviados, além das validações existentes.
 - `config/SecurityConfig.java`: acesso público à interface e à especificação Swagger, preservando a proteção das demais rotas.
 
+## Front-end
+
+O front-end (React + Vite) fica em `frontend/`. Com a API rodando:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Abra <http://localhost:5173>. Detalhes de rotas e organização em [frontend/README.md](frontend/README.md).
+
 ## Testes
 
 ```powershell

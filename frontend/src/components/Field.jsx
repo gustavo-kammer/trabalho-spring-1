@@ -1,6 +1,7 @@
 import { useId } from 'react'
 
-export default function Field({ label, name, error, hint, optional, ...inputProps }) {
+// as="textarea" para textos longos (bio, ingredientes, comentários)
+export default function Field({ label, name, error, hint, optional, as: Control = 'input', ...inputProps }) {
   const id = useId()
   const messageId = `${id}-msg`
   return (
@@ -9,7 +10,7 @@ export default function Field({ label, name, error, hint, optional, ...inputProp
         {label}
         {optional && <span className="field__optional"> (opcional)</span>}
       </label>
-      <input
+      <Control
         id={id}
         name={name}
         aria-invalid={error ? 'true' : undefined}

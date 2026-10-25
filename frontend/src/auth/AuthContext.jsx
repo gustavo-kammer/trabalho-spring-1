@@ -34,11 +34,14 @@ export function AuthProvider({ children }) {
       .then((data) => {
         if (!cancelled) setUser(data)
       })
-      .catch(() => {})
+      .catch((error) => {
+        // conta excluída: o token ainda é válido, mas o usuário não existe mais
+        if (!cancelled && error.status === 404) logout()
+      })
     return () => {
       cancelled = true
     }
-  }, [token])
+  }, [token, logout])
 
   const login = useCallback(async (email, password) => {
     const { token: newToken } = await authApi.login(email, password)
@@ -48,7 +51,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const value = useMemo(
-    () => ({ user, login, logout, isAuthenticated: Boolean(token), sessionExpired }),
+    // setUser: usado depois de editar o perfil, para a tela toda ver os dados novos
+    () => ({ user, setUser, login, logout, isAuthenticated: Boolean(token), sessionExpired }),
     [user, login, logout, token, sessionExpired],
   )
 

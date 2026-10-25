@@ -44,8 +44,22 @@ h1, h2, p { margin: 0; }
 
 .btn--primary:hover:not(:disabled) { background: var(--color-primary-dark); }
 .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+a.btn { text-decoration: none; }
+.btn:not(.btn--primary):hover:not(:disabled) { background: var(--color-info-bg); }
+
+.btn--ghost { background: transparent; border-color: transparent; }
+.btn--danger { color: var(--color-danger); border-color: var(--color-danger); }
+.btn--danger:not(.btn--primary):hover:not(:disabled) { background: var(--color-danger-bg); }
+.btn--sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
+/* botão ligado (curtido, favoritado, seguindo) */
+.btn--active { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary-dark); }
+.btn--active:not(.btn--primary):hover:not(:disabled) { background: var(--color-primary-soft); }
+
 .btn:focus-visible,
 .field input:focus-visible,
+.field textarea:focus-visible,
+.tag--button:focus-visible,
+.search-input:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
@@ -60,7 +74,8 @@ a:focus-visible {
 .field { display: flex; flex-direction: column; gap: var(--space-1); }
 .field label { font-weight: 600; font-size: 0.9rem; }
 .field__optional { font-weight: 400; color: var(--color-text-muted); }
-.field input {
+.field input,
+.field textarea {
   padding: 0.65rem 0.8rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -68,7 +83,14 @@ a:focus-visible {
   color: var(--color-text);
   font: inherit;
 }
-.field input[aria-invalid='true'] { border-color: var(--color-danger); }
+.field textarea { min-height: 6rem; resize: vertical; }
+.field input:disabled { background: var(--color-bg); color: var(--color-text-muted); }
+.field input[aria-invalid='true'],
+.field textarea[aria-invalid='true'] { border-color: var(--color-danger); }
+fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
+fieldset.field legend { font-weight: 600; font-size: 0.9rem; padding: 0; margin-bottom: var(--space-1); }
+
+.form__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); }
 .field__error { color: var(--color-danger); font-size: 0.85rem; }
 .field__hint { color: var(--color-text-muted); font-size: 0.85rem; }
 
@@ -80,6 +102,129 @@ a:focus-visible {
 }
 .alert--error { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid var(--color-danger); }
 .alert--info { background: var(--color-info-bg); color: var(--color-text); border: 1px solid var(--color-border); }
+
+/* ---- Páginas internas ---- */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+.page { padding-top: var(--space-4); padding-bottom: var(--space-5); }
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.page-header h1 { font-size: 1.75rem; line-height: 1.2; }
+.page-header p { color: var(--color-text-muted); margin-top: var(--space-1); }
+
+.section-title { font-size: 1.25rem; margin: 0 0 var(--space-3); }
+.muted { color: var(--color-text-muted); }
+
+.link-back {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.link-back:hover { color: var(--color-primary-dark); }
+
+.search-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+/* Etiquetas de categoria */
+.tags { display: flex; flex-wrap: wrap; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag--more { background: var(--color-info-bg); color: var(--color-text-muted); }
+.tag--button {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.tag--button:hover { border-color: var(--color-primary); }
+.tag--button[aria-pressed='true'] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* Avatar com iniciais */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+.avatar--sm { width: 32px; height: 32px; font-size: 0.75rem; }
+.avatar--md { width: 44px; height: 44px; font-size: 0.95rem; }
+.avatar--lg { width: 96px; height: 96px; font-size: 2rem; }
+
+/* Carregando, vazio e erro */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-3);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+.state__title { color: var(--color-text); font-size: 1.1rem; font-weight: 600; }
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-box { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+
+/* Abas (seguidores / seguindo) */
+.tabs { display: flex; gap: var(--space-1); border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-4); }
+.tabs a {
+  padding: 0.6rem 1rem;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tabs a.active { color: var(--color-primary-dark); border-bottom-color: var(--color-primary); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
